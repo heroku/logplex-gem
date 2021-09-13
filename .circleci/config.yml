@@ -1,0 +1,15 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/ruby:2.7.4
+    steps:
+      - checkout
+      - run: bundle install
+      - run: bundle exec rspec
+
+workflows:
+  test:
+    jobs:
+      - test
