@@ -40,7 +40,7 @@ module Logplex
         "Content-Type" => 'application/logplex-1',
         "Content-Length" => message.length,
         "Logplex-Msg-Count" => number_messages
-      }, expects: [200, 204])
+      }, expects: [200, 202, 204])
     end
   end
 end
