@@ -56,6 +56,13 @@ describe Logplex::Publisher do
         expect(publisher.publish(message)).to be_truthy
       end
 
+      it 'does the thing with a 202' do
+        Excon.stub({ method: :post, password: "t.some-token", body: /hi\="there\"/ }, status: 202)
+        message = { hi: 'there' }
+        publisher = Logplex::Publisher.new('https://token:t.some-token@logplex.example.com')
+        expect(publisher.publish(message)).to be_truthy
+      end
+
       it 'returns true' do
         Excon.stub({ method: :post, password: "t.some-token" }, status: 204)
         message = 'I have a message for you'
