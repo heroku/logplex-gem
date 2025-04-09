@@ -102,5 +102,17 @@ describe Logplex::Publisher do
       expect(Excon).to receive(:post).with(any_args, hash_including(:headers => headers))
       Logplex::Publisher.new('https://token:t.some-token@logplex.example.com').publish(message)
     end
+
+    it "supports bearer authentication" do
+      message = 'hello-bearer'
+      headers = {
+        "Authorization" => 'Bearer test-bearer-token',
+        "Content-Type" => 'application/logplex-1',
+        "Content-Length" => 70,
+        "Logplex-Msg-Count" => 1
+      }
+      expect(Excon).to receive(:post).with(any_args, hash_including(:headers => headers))
+      Logplex::Publisher.new('https://logplex-next.example.com', bearer_token: 'test-bearer-token').publish(message)
+    end
   end
 end

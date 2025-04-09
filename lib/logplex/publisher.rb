@@ -9,9 +9,10 @@ module Logplex
                       Excon::Errors::Unauthorized,
                       Timeout::Error].freeze
 
-    def initialize(logplex_url = nil)
+    def initialize(logplex_url = nil, bearer_token: nil)
       @logplex_url = logplex_url || Logplex.configuration.logplex_url
       @token = URI(@logplex_url).password || Logplex.configuration.app_name
+      @auth_headers = bearer_token ? { 'Authorization' => "Bearer #{bearer_token}" } : {}
     end
 
     def publish(messages, opts={})
@@ -36,11 +37,11 @@ module Logplex
     private
 
     def api_post(message, number_messages)
-      Excon.post(@logplex_url, body: message, headers: {
+      Excon.post(@logplex_url, body: message, headers: @auth_headers.merge({
         "Content-Type" => 'application/logplex-1',
         "Content-Length" => message.length,
         "Logplex-Msg-Count" => number_messages
-      }, expects: [200, 202, 204])
+      }), expects: [200, 202, 204])
     end
   end
 end
