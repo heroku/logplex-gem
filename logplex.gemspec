@@ -21,5 +21,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency "excon"
 
   gem.add_development_dependency "rspec"
+  gem.add_development_dependency "rubocop"
+  gem.add_development_dependency "rubocop-performance"
+  gem.add_development_dependency "rubocop-rspec"
   gem.add_development_dependency "webmock"
 end
