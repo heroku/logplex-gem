@@ -7,6 +7,7 @@ module Logplex
   class Publisher
     PUBLISH_ERRORS = [Excon::Errors::InternalServerError,
                       Excon::Errors::Unauthorized,
+                      Excon::Error::Timeout,
                       Timeout::Error].freeze
 
     def initialize(logplex_url = nil, bearer_token: nil)
