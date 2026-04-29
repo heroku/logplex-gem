@@ -1,13 +1,16 @@
 # encoding: UTF-8
-require 'excon'
+require 'net/http'
+require 'uri'
 require 'logplex/message'
 require 'timeout'
 
 module Logplex
   class Publisher
-    PUBLISH_ERRORS = [Excon::Errors::InternalServerError,
-                      Excon::Errors::Unauthorized,
-                      Excon::Error::Timeout,
+    PublishError = Class.new(StandardError)
+
+    PUBLISH_ERRORS = [PublishError,
+                      Net::OpenTimeout,
+                      Net::ReadTimeout,
                       Timeout::Error].freeze
 
     def initialize(logplex_url = nil, bearer_token: nil)
@@ -38,11 +41,27 @@ module Logplex
     private
 
     def api_post(message, number_messages)
-      Excon.post(@logplex_url, body: message, headers: @auth_headers.merge({
-        "Content-Type" => 'application/logplex-1',
-        "Content-Length" => message.length,
-        "Logplex-Msg-Count" => number_messages
-      }), expects: [200, 202, 204])
+      uri = URI(@logplex_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = uri.scheme == 'https'
+
+      request = Net::HTTP::Post.new(uri)
+      request.body = message
+      request['Content-Type'] = 'application/logplex-1'
+      request['Content-Length'] = message.length
+      request['Logplex-Msg-Count'] = number_messages
+
+      if @auth_headers.key?('Authorization')
+        request['Authorization'] = @auth_headers['Authorization']
+      elsif uri.password
+        request.basic_auth(uri.user, uri.password)
+      end
+
+      response = http.request(request)
+
+      unless %w[200 202 204].include?(response.code)
+        raise PublishError, "Unexpected response: #{response.code}"
+      end
     end
   end
 end
