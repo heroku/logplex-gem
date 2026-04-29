@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Bearer authentication support via `bearer_token:` keyword argument on `Publisher`
 - RuboCop linting with StandardRB-based configuration
 - GitHub Actions CI workflow (Ruby 3.2, 3.3, 3.4, 4.0)
+- Replaced `excon` with `Net::HTTP`
 
 ### Changed
 
