@@ -58,7 +58,7 @@ describe Logplex::Publisher do
 
       it 'does the thing' do
         WebMock.stub_request(:post, "https://logplex.example.com")
-          .with(body: /hi\="there\"/, basic_auth: ['token', 't.some-token'])
+          .with(body: /hi="there"/, basic_auth: ['token', 't.some-token'])
           .to_return(status: 204)
         message = { hi: 'there' }
         publisher = Logplex::Publisher.new('https://token:t.some-token@logplex.example.com')
@@ -67,7 +67,7 @@ describe Logplex::Publisher do
 
       it 'does the thing with a 202' do
         WebMock.stub_request(:post, "https://logplex.example.com")
-          .with(body: /hi\="there\"/, basic_auth: ['token', 't.some-token'])
+          .with(body: /hi="there"/, basic_auth: ['token', 't.some-token'])
           .to_return(status: 202)
         message = { hi: 'there' }
         publisher = Logplex::Publisher.new('https://token:t.some-token@logplex.example.com')
