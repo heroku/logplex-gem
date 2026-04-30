@@ -48,7 +48,7 @@ module Logplex
     def formatted_message
       if @message.is_a?(Hash)
         @message.inject([]) do |res, (key, value)|
-          res << %{#{key}="#{value}"}
+          res << %(#{key}="#{value}")
         end.join(' ')
       else
         @message
