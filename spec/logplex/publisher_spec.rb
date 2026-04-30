@@ -117,7 +117,7 @@ describe Logplex::Publisher do
           headers: {
             "Content-Type" => "application/logplex-1",
             "Content-Length" => 79,
-            "Logplex-Msg-Count" => 1
+            "Logplex-Msg-Count" => 1,
           },
         ).to_return(status: 204)
       message = "hello-harold"
@@ -132,7 +132,7 @@ describe Logplex::Publisher do
             "Authorization" => "Bearer test-bearer-token",
             "Content-Type" => "application/logplex-1",
             "Content-Length" => 70,
-            "Logplex-Msg-Count" => 1
+            "Logplex-Msg-Count" => 1,
           },
         ).to_return(status: 204)
       message = "hello-bearer"
