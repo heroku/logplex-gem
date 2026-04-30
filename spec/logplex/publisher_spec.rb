@@ -23,7 +23,7 @@ describe Logplex::Publisher do
           .with(body: /message for you/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         message = "I have a message for you"
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         publisher.publish(message)
         expect(stub).to have_been_requested
       end
@@ -33,7 +33,7 @@ describe Logplex::Publisher do
           .with(body: /message for you.+here is another.+some final thoughts/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         messages = ["I have a message for you", "here is another", "some final thoughts"]
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         publisher.publish(messages)
         expect(stub).to have_been_requested
       end
@@ -43,7 +43,7 @@ describe Logplex::Publisher do
           .with(body: /t.some-token/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         message = "I have a message for you"
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         publisher.publish(message)
         expect(stub).to have_been_requested
       end
@@ -53,7 +53,7 @@ describe Logplex::Publisher do
           .with(body: /foo/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         message = "I have a message for you"
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         publisher.publish(message, app_name: "foo")
         expect(stub).to have_been_requested
       end
@@ -63,7 +63,7 @@ describe Logplex::Publisher do
           .with(body: /hi="there"/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         message = { hi: "there" }
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         expect(publisher.publish(message)).to be_truthy
       end
 
@@ -72,7 +72,7 @@ describe Logplex::Publisher do
           .with(body: /hi="there"/, basic_auth: ["token", "t.some-token"])
           .to_return(status: 202)
         message = { hi: "there" }
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         expect(publisher.publish(message)).to be_truthy
       end
 
@@ -81,7 +81,7 @@ describe Logplex::Publisher do
           .with(basic_auth: ["token", "t.some-token"])
           .to_return(status: 204)
         message = "I have a message for you"
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         expect(publisher.publish(message)).to be_truthy
       end
 
@@ -90,7 +90,7 @@ describe Logplex::Publisher do
           .with(basic_auth: ["token", "t.some-token"])
           .to_return(status: 401)
         message = "I have a message for you"
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         expect(publisher.publish(message)).to be_falsey
       end
     end
@@ -100,7 +100,7 @@ describe Logplex::Publisher do
         WebMock.stub_request(:post, "https://logplex.example.com")
           .with(basic_auth: ["token", "t.some-token"])
           .to_return(status: 500)
-        publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
         expect(publisher.publish("hi")).to be_falsey
       end
     end
@@ -108,7 +108,7 @@ describe Logplex::Publisher do
     it "handles timeouts" do
       WebMock.stub_request(:post, "https://logplex.example.com")
         .to_timeout
-      publisher = Logplex::Publisher.new("https://token:t.some-token@logplex.example.com")
+      publisher = described_class.new("https://token:t.some-token@logplex.example.com")
       expect(publisher.publish("hi")).to be_falsey
     end
 
@@ -123,7 +123,7 @@ describe Logplex::Publisher do
           },
         ).to_return(status: 204)
       message = "hello-harold"
-      Logplex::Publisher.new("https://token:t.some-token@logplex.example.com").publish(message)
+      described_class.new("https://token:t.some-token@logplex.example.com").publish(message)
       expect(stub).to have_been_requested
     end
 
@@ -138,7 +138,7 @@ describe Logplex::Publisher do
           },
         ).to_return(status: 204)
       message = "hello-bearer"
-      Logplex::Publisher.new("https://logplex-next.example.com", bearer_token: "test-bearer-token").publish(message)
+      described_class.new("https://logplex-next.example.com", bearer_token: "test-bearer-token").publish(message)
       expect(stub).to have_been_requested
     end
   end

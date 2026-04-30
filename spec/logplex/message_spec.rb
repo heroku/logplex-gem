@@ -8,7 +8,7 @@ describe Logplex::Message do
   after { restore_default_config }
 
   it "fills out fields of a syslog message" do
-    message = Logplex::Message.new(
+    message = described_class.new(
       "my message here",
       app_name: "t.some-token",
       time: DateTime.parse("1980-08-23 05:31 00:00"),
@@ -23,10 +23,10 @@ describe Logplex::Message do
   end
 
   it "is invalid for messages longer than 10240 bytes" do
-    short = Logplex::Message.new("a" * 10240, app_name:   "foo",
+    short = described_class.new("a" * 10240, app_name:   "foo",
       process: "proc",
       host:    "host",)
-    long = Logplex::Message.new("a" * 10241, app_name: "foo",
+    long = described_class.new("a" * 10241, app_name: "foo",
       process: "proc",
       host:    "host",)
     short.validate
@@ -42,7 +42,7 @@ describe Logplex::Message do
       conf.process = nil
     end
 
-    message = Logplex::Message.new("a message", app_name: "t.some-token")
+    message = described_class.new("a message", app_name: "t.some-token")
     message.validate
 
     expect(message.valid?).to be_falsey
@@ -51,7 +51,7 @@ describe Logplex::Message do
   end
 
   it "formats logs as key/values when given a hash" do
-    message = Logplex::Message.new(
+    message = described_class.new(
       { vocals: "Robert Plant", guitar: "Jimmy Page" },
       app_name: "t.some-token",
       process: "proc",
