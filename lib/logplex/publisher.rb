@@ -9,9 +9,9 @@ module Logplex
     PublishError = Class.new(StandardError)
 
     PUBLISH_ERRORS = [PublishError,
-                      Net::OpenTimeout,
-                      Net::ReadTimeout,
-                      Timeout::Error].freeze
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+      Timeout::Error].freeze
 
     def initialize(logplex_url = nil, bearer_token: nil)
       @logplex_url = logplex_url || Logplex.configuration.logplex_url
