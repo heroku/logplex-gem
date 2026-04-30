@@ -20,7 +20,7 @@ module Logplex
       @auth_headers = bearer_token ? { 'Authorization' => "Bearer #{bearer_token}" } : {}
     end
 
-    def publish(messages, opts={})
+    def publish(messages, opts = {})
       message_list = messages.dup
       unless messages.is_a? Array
         message_list = [message_list]
