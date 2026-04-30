@@ -2,18 +2,12 @@
 
 require "net/http"
 require "uri"
+require "logplex/errors"
 require "logplex/message"
 require "timeout"
 
 module Logplex
   class Publisher
-    PublishError = Class.new(StandardError)
-
-    PUBLISH_ERRORS = [PublishError,
-      Net::OpenTimeout,
-      Net::ReadTimeout,
-      Timeout::Error,].freeze
-
     def initialize(logplex_url = nil, bearer_token: nil)
       @logplex_url = logplex_url || Logplex.configuration.logplex_url
       @token = URI(@logplex_url).password || Logplex.configuration.app_name
@@ -28,15 +22,17 @@ module Logplex
       message_list.map! { |m| Message.new(m, { app_name: @token }.merge(opts)) }
       message_list.each(&:validate)
       if message_list.inject(true) { |accum, m| m.valid? }
-        begin
-          Timeout.timeout(Logplex.configuration.publish_timeout) do
-            api_post(message_list.map(&:syslog_frame).join(""), message_list.length)
-            true
-          end
-        rescue *PUBLISH_ERRORS
-          false
+        Timeout.timeout(Logplex.configuration.publish_timeout) do
+          api_post(message_list.map(&:syslog_frame).join(""), message_list.length)
+          true
         end
       end
+    rescue Errno::ECONNRESET => e
+      raise Logplex::HTTP::ConnectionResetError, e.message
+    rescue ::SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH => e
+      raise Logplex::HTTP::SocketError, e.message
+    rescue Timeout::Error => e
+      raise Logplex::HTTP::TimeoutError, e.message
     end
 
     private
@@ -60,8 +56,20 @@ module Logplex
 
       response = http.request(request)
 
-      unless %w[200 202 204].include?(response.code)
-        raise PublishError, "Unexpected response: #{response.code}"
+      code = Integer(response.code, 10)
+      return if [200, 202, 204].include?(code)
+
+      case code
+      when 303
+        raise Logplex::HTTP::SeeOtherError, "Unexpected response: #{response.code}"
+      when 503
+        raise Logplex::HTTP::ServiceUnavailableError, "Unexpected response: #{response.code}"
+      when 400..499
+        raise Logplex::HTTP::ClientError, "Unexpected response: #{response.code}"
+      when 500..599
+        raise Logplex::HTTP::ServerError, "Unexpected response: #{response.code}"
+      else
+        raise Logplex::HTTP::Error, "Unexpected response: #{response.code}"
       end
     end
   end

@@ -85,31 +85,81 @@ describe Logplex::Publisher do
         expect(publisher.publish(message)).to be_truthy
       end
 
-      it "returns false when there's an auth error" do
+      it "raises ClientError when there's an auth error" do
         WebMock.stub_request(:post, "https://logplex.example.com")
           .with(basic_auth: ["token", "t.some-token"])
           .to_return(status: 401)
         message = "I have a message for you"
         publisher = described_class.new("https://token:t.some-token@logplex.example.com")
-        expect(publisher.publish(message)).to be_falsey
+        expect { publisher.publish(message) }.to raise_error(Logplex::HTTP::ClientError)
       end
     end
 
     context "when the logplex service is acting up" do
-      it "returns false" do
+      it "raises ServerError on 500" do
         WebMock.stub_request(:post, "https://logplex.example.com")
           .with(basic_auth: ["token", "t.some-token"])
           .to_return(status: 500)
         publisher = described_class.new("https://token:t.some-token@logplex.example.com")
-        expect(publisher.publish("hi")).to be_falsey
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::ServerError)
+      end
+
+      it "raises ServiceUnavailableError on 503" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .with(basic_auth: ["token", "t.some-token"])
+          .to_return(status: 503)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::ServiceUnavailableError)
+      end
+
+      it "ServiceUnavailableError is rescuable as ServerError" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .with(basic_auth: ["token", "t.some-token"])
+          .to_return(status: 503)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::ServerError)
+      end
+
+      it "raises SeeOtherError on 303" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .with(basic_auth: ["token", "t.some-token"])
+          .to_return(status: 303)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::SeeOtherError)
       end
     end
 
-    it "handles timeouts" do
-      WebMock.stub_request(:post, "https://logplex.example.com")
-        .to_timeout
-      publisher = described_class.new("https://token:t.some-token@logplex.example.com")
-      expect(publisher.publish("hi")).to be_falsey
+    context "when there are client errors" do
+      it "raises ClientError on 401" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .with(basic_auth: ["token", "t.some-token"])
+          .to_return(status: 401)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::ClientError)
+      end
+    end
+
+    context "when there are network errors" do
+      it "raises TimeoutError on timeout" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .to_timeout
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::TimeoutError)
+      end
+
+      it "raises ConnectionResetError on ECONNRESET" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .to_raise(Errno::ECONNRESET)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::ConnectionResetError)
+      end
+
+      it "raises SocketError on connection refused" do
+        WebMock.stub_request(:post, "https://logplex.example.com")
+          .to_raise(Errno::ECONNREFUSED)
+        publisher = described_class.new("https://token:t.some-token@logplex.example.com")
+        expect { publisher.publish("hi") }.to raise_error(Logplex::HTTP::SocketError)
+      end
     end
 
     it "includes the correct headers" do
