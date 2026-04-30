@@ -1,6 +1,6 @@
-require 'valcro'
-require 'time'
-require 'logplex/configuration'
+require "valcro"
+require "time"
+require "logplex/configuration"
 
 module Logplex
   class Message
@@ -8,9 +8,9 @@ module Logplex
 
     # facility = local0, priority = info, RFC5452 encoded
     # syslog version 1
-    FACILITY_AND_PRIORITY = '<134>1'.freeze
+    FACILITY_AND_PRIORITY = "<134>1".freeze
 
-    FIELD_DISABLED = '-'.freeze
+    FIELD_DISABLED = "-".freeze
 
     def initialize(message, opts = {})
       @message = message
@@ -49,7 +49,7 @@ module Logplex
       if @message.is_a?(Hash)
         @message.inject([]) do |res, (key, value)|
           res << %(#{key}="#{value}")
-        end.join(' ')
+        end.join(" ")
       else
         @message
       end

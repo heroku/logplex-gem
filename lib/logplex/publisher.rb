@@ -1,7 +1,7 @@
-require 'net/http'
-require 'uri'
-require 'logplex/message'
-require 'timeout'
+require "net/http"
+require "uri"
+require "logplex/message"
+require "timeout"
 
 module Logplex
   class Publisher
@@ -15,7 +15,7 @@ module Logplex
     def initialize(logplex_url = nil, bearer_token: nil)
       @logplex_url = logplex_url || Logplex.configuration.logplex_url
       @token = URI(@logplex_url).password || Logplex.configuration.app_name
-      @auth_headers = bearer_token ? { 'Authorization' => "Bearer #{bearer_token}" } : {}
+      @auth_headers = bearer_token ? { "Authorization" => "Bearer #{bearer_token}" } : {}
     end
 
     def publish(messages, opts = {})
@@ -28,7 +28,7 @@ module Logplex
       if message_list.inject(true) { |accum, m| m.valid? }
         begin
           Timeout.timeout(Logplex.configuration.publish_timeout) do
-            api_post(message_list.map(&:syslog_frame).join(''), message_list.length)
+            api_post(message_list.map(&:syslog_frame).join(""), message_list.length)
             true
           end
         rescue *PUBLISH_ERRORS
@@ -42,16 +42,16 @@ module Logplex
     def api_post(message, number_messages)
       uri = URI(@logplex_url)
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = uri.scheme == 'https'
+      http.use_ssl = uri.scheme == "https"
 
       request = Net::HTTP::Post.new(uri)
       request.body = message
-      request['Content-Type'] = 'application/logplex-1'
-      request['Content-Length'] = message.length
-      request['Logplex-Msg-Count'] = number_messages
+      request["Content-Type"] = "application/logplex-1"
+      request["Content-Length"] = message.length
+      request["Logplex-Msg-Count"] = number_messages
 
-      if @auth_headers.key?('Authorization')
-        request['Authorization'] = @auth_headers['Authorization']
+      if @auth_headers.key?("Authorization")
+        request["Authorization"] = @auth_headers["Authorization"]
       elsif uri.password
         request.basic_auth(uri.user, uri.password)
       end

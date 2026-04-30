@@ -1,18 +1,18 @@
-require 'spec_helper'
-require 'logplex/message'
+require "spec_helper"
+require "logplex/message"
 
 describe Logplex::Message do
   before { Logplex.configure {} }
   after { restore_default_config }
 
-  it 'fills out fields of a syslog message' do
+  it "fills out fields of a syslog message" do
     message = Logplex::Message.new(
-      'my message here',
-      app_name: 't.some-token',
+      "my message here",
+      app_name: "t.some-token",
       time: DateTime.parse("1980-08-23 05:31 00:00"),
-      process: 'heroku-postgres',
-      host: 'some-host',
-      message_id: '1'
+      process: "heroku-postgres",
+      host: "some-host",
+      message_id: "1"
     )
 
     expect(message.syslog_frame).to eq(
@@ -20,13 +20,13 @@ describe Logplex::Message do
     )
   end
 
-  it 'is invalid for messages longer than 10240 bytes' do
-    short = Logplex::Message.new('a' * 10240, app_name:   'foo',
-      process: 'proc',
-      host:    'host')
-    long = Logplex::Message.new('a' * 10241, app_name: 'foo',
-      process: 'proc',
-      host:    'host')
+  it "is invalid for messages longer than 10240 bytes" do
+    short = Logplex::Message.new("a" * 10240, app_name:   "foo",
+      process: "proc",
+      host:    "host")
+    long = Logplex::Message.new("a" * 10241, app_name: "foo",
+      process: "proc",
+      host:    "host")
     short.validate
     long.validate
 
@@ -34,13 +34,13 @@ describe Logplex::Message do
     expect(long.valid?).to be_falsey
   end
 
-  it 'is invalid with no process or host' do
+  it "is invalid with no process or host" do
     Logplex.configure do |conf|
       conf.host = nil
       conf.process = nil
     end
 
-    message = Logplex::Message.new("a message", app_name: 't.some-token')
+    message = Logplex::Message.new("a message", app_name: "t.some-token")
     message.validate
 
     expect(message.valid?).to be_falsey
@@ -48,12 +48,12 @@ describe Logplex::Message do
     expect(message.errors[:host]).to eq ["can't be nil"]
   end
 
-  it 'formats logs as key/values when given a hash' do
+  it "formats logs as key/values when given a hash" do
     message = Logplex::Message.new(
-      { vocals: 'Robert Plant', guitar: 'Jimmy Page' },
-      app_name: 't.some-token',
-      process: 'proc',
-      host: 'host',
+      { vocals: "Robert Plant", guitar: "Jimmy Page" },
+      app_name: "t.some-token",
+      process: "proc",
+      host: "host",
       time: DateTime.parse("1980-08-23 05:31 00:00")
     )
 
