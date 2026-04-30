@@ -52,7 +52,7 @@ describe Logplex::Message do
       { vocals: 'Robert Plant', guitar: 'Jimmy Page' },
       app_name: 't.some-token',
       process: 'proc',
-      host:    'host',
+      host: 'host',
       time: DateTime.parse("1980-08-23 05:31 00:00")
     )
 
