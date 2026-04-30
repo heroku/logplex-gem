@@ -21,11 +21,11 @@ describe Logplex::Message do
 
   it 'is invalid for messages longer than 10240 bytes' do
     short = Logplex::Message.new('a' * 10240, app_name:   'foo',
-                                              process: 'proc',
-                                              host:    'host')
+      process: 'proc',
+      host:    'host')
     long  = Logplex::Message.new('a' * 10241, app_name: 'foo',
-                                              process: 'proc',
-                                              host:    'host')
+      process: 'proc',
+      host:    'host')
     short.validate
     long.validate
 

@@ -1,10 +1,10 @@
 module Logplex
   class Configuration
     attr_accessor :logplex_url,
-                  :app_name,
-                  :process,
-                  :host,
-                  :publish_timeout
+      :app_name,
+      :process,
+      :host,
+      :publish_timeout
 
     def initialize
       @logplex_url     = 'https://east.logplex.io/logs'
