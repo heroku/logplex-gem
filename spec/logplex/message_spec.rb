@@ -32,8 +32,8 @@ describe Logplex::Message do
     short.validate
     long.validate
 
-    expect(short.valid?).to be_truthy
-    expect(long.valid?).to be_falsey
+    expect(short).to be_valid
+    expect(long).not_to be_valid
   end
 
   it "is invalid with no process or host" do
@@ -45,7 +45,7 @@ describe Logplex::Message do
     message = described_class.new("a message", app_name: "t.some-token")
     message.validate
 
-    expect(message.valid?).to be_falsey
+    expect(message).not_to be_valid
     expect(message.errors[:process]).to eq ["can't be nil"]
     expect(message.errors[:host]).to eq ["can't be nil"]
   end
