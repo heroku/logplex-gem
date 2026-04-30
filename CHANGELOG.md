@@ -9,35 +9,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 -
+
 ### Changed
 
 -
 
-## [0.0.8]
+## [1.0.0]
 
 ### Added
 
-- Bearer authentication support via `bearer_token:` keyword argument on `Publisher`
+- `Logplex::HTTP::Error` exception hierarchy. See: lib/logplex/errors.rb
 - RuboCop linting with StandardRB-based configuration
 - GitHub Actions CI workflow (Ruby 3.2, 3.3, 3.4, 4.0)
-- Replaced `excon` with `Net::HTTP`
 
 ### Changed
 
 - Migrated test stubs from Excon mocks to WebMock
 - Migrated CI from CircleCI to GitHub Actions
-- Handle `Excon::Error::Timeout` in addition to `Timeout::Error`
 
 ### Removed
 
-- CircleCI configuration
+- **Breaking Change:** Replace `Excon` with stdlib `Net::HTTP` - Gem-specific errors are raised rather than Excon-specific errors. See: lib/logplex/errors.rb
 - Duplicate license file
 
 ## [0.0.7]
 
 ### Added
 
-- N/A
+- Bearer authentication support via `bearer_token:` keyword argument on `Publisher`
 
 ### Changed
 
@@ -105,8 +104,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Bug caused by invoking `Array()` on a hash
 
-[Unreleased]: https://github.com/heroku/logplex-gem/compare/v0.0.8...HEAD
-[0.0.8]: https://github.com/heroku/logplex-gem/compare/v0.0.7...0.0.8
+[Unreleased]: https://github.com/heroku/logplex-gem/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/heroku/logplex-gem/compare/v0.0.7...v1.0.0
 [0.0.7]: https://github.com/heroku/logplex-gem/compare/v0.0.6...0.0.7
 [0.0.6]: https://github.com/heroku/logplex-gem/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/heroku/logplex-gem/compare/v0.0.4...v0.0.5
