@@ -12,21 +12,21 @@ describe Logplex::Message do
       time: DateTime.parse("1980-08-23 05:31 00:00"),
       process: "heroku-postgres",
       host: "some-host",
-      message_id: "1"
+      message_id: "1",
     )
 
     expect(message.syslog_frame).to eq(
-      "91 <134>1 1980-08-23T05:31:00+00:00 some-host t.some-token heroku-postgres 1 - my message here"
+      "91 <134>1 1980-08-23T05:31:00+00:00 some-host t.some-token heroku-postgres 1 - my message here",
     )
   end
 
   it "is invalid for messages longer than 10240 bytes" do
     short = Logplex::Message.new("a" * 10240, app_name:   "foo",
       process: "proc",
-      host:    "host")
+      host:    "host",)
     long = Logplex::Message.new("a" * 10241, app_name: "foo",
       process: "proc",
-      host:    "host")
+      host:    "host",)
     short.validate
     long.validate
 
@@ -54,11 +54,11 @@ describe Logplex::Message do
       app_name: "t.some-token",
       process: "proc",
       host: "host",
-      time: DateTime.parse("1980-08-23 05:31 00:00")
+      time: DateTime.parse("1980-08-23 05:31 00:00"),
     )
 
     expect(message.syslog_frame).to eq(
-      %(101 <134>1 1980-08-23T05:31:00+00:00 host t.some-token proc - - vocals="Robert Plant" guitar="Jimmy Page")
+      %(101 <134>1 1980-08-23T05:31:00+00:00 host t.some-token proc - - vocals="Robert Plant" guitar="Jimmy Page"),
     )
   end
 end

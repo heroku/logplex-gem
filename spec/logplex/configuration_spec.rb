@@ -7,7 +7,7 @@ describe Logplex::Configuration do
       Logplex.configure { |config| }
 
       expect(
-        Logplex.configuration.logplex_url
+        Logplex.configuration.logplex_url,
       ).to eq("https://east.logplex.io/logs")
     end
   end

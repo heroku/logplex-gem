@@ -118,7 +118,7 @@ describe Logplex::Publisher do
             "Content-Type" => "application/logplex-1",
             "Content-Length" => 79,
             "Logplex-Msg-Count" => 1
-          }
+          },
         ).to_return(status: 204)
       message = "hello-harold"
       Logplex::Publisher.new("https://token:t.some-token@logplex.example.com").publish(message)
@@ -133,7 +133,7 @@ describe Logplex::Publisher do
             "Content-Type" => "application/logplex-1",
             "Content-Length" => 70,
             "Logplex-Msg-Count" => 1
-          }
+          },
         ).to_return(status: 204)
       message = "hello-bearer"
       Logplex::Publisher.new("https://logplex-next.example.com", bearer_token: "test-bearer-token").publish(message)
