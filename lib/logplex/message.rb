@@ -13,11 +13,11 @@ module Logplex
     FIELD_DISABLED = '-'.freeze
 
     def initialize(message, opts = {})
-      @message    = message
-      @app_name   = opts[:app_name] || Logplex.configuration.app_name
-      @time       = opts[:time] || DateTime.now
-      @process    = opts[:process] || Logplex.configuration.process
-      @host       = opts[:host] || Logplex.configuration.host
+      @message = message
+      @app_name = opts[:app_name] || Logplex.configuration.app_name
+      @time = opts[:time] || DateTime.now
+      @process = opts[:process] || Logplex.configuration.process
+      @host = opts[:host] || Logplex.configuration.host
       @message_id = opts[:message_id] || FIELD_DISABLED
     end
 

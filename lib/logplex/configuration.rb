@@ -7,10 +7,10 @@ module Logplex
       :publish_timeout
 
     def initialize
-      @logplex_url     = 'https://east.logplex.io/logs'
-      @host            = 'localhost'
+      @logplex_url = 'https://east.logplex.io/logs'
+      @host = 'localhost'
       @publish_timeout = 1
-      @app_name        = 'app'
+      @app_name = 'app'
     end
   end
 

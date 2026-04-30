@@ -23,7 +23,7 @@ describe Logplex::Message do
     short = Logplex::Message.new('a' * 10240, app_name:   'foo',
       process: 'proc',
       host:    'host')
-    long  = Logplex::Message.new('a' * 10241, app_name: 'foo',
+    long = Logplex::Message.new('a' * 10241, app_name: 'foo',
       process: 'proc',
       host:    'host')
     short.validate
@@ -35,7 +35,7 @@ describe Logplex::Message do
 
   it 'is invalid with no process or host' do
     Logplex.configure do |conf|
-      conf.host    = nil
+      conf.host = nil
       conf.process = nil
     end
 
