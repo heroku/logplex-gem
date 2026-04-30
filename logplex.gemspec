@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version = Logplex::VERSION
   spec.authors = ["Harold Giménez", "Heroku"]
   spec.email = ["harold.gimenez@gmail.com"]
-  spec.description = "Publish and Consume Logplex messages"
+  spec.description = "Logplex client"
   spec.summary = "Publish and Consume Logplex messages"
   spec.homepage = "https://github.com/heroku/logplex-gem"
   spec.license = "MIT"
