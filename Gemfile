@@ -2,5 +2,10 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in logplex.gemspec
 gemspec
+
+gem "rspec"
+gem "rubocop"
+gem "rubocop-performance"
+gem "rubocop-rspec"
+gem "webmock"
