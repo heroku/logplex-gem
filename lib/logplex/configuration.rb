@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Logplex
   class Configuration
     attr_accessor :logplex_url,

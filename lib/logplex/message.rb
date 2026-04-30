@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "valcro"
 require "time"
 require "logplex/configuration"
@@ -8,9 +10,9 @@ module Logplex
 
     # facility = local0, priority = info, RFC5452 encoded
     # syslog version 1
-    FACILITY_AND_PRIORITY = "<134>1".freeze
+    FACILITY_AND_PRIORITY = "<134>1"
 
-    FIELD_DISABLED = "-".freeze
+    FIELD_DISABLED = "-"
 
     def initialize(message, opts = {})
       @message = message
