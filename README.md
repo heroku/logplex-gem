@@ -2,10 +2,9 @@
 
 Publish and Consume Logplex messages
 
-Logplex is the Heroku log router, and can be found
-[here](https://github.com/heroku/logplex).
+Logplex is the Heroku log router, and [can be found here](https://github.com/heroku/logplex).
 
-### Publishing messages
+## Publishing messages
 
 ```ruby
 publisher = Logplex::Publisher.new(logplex_url)
@@ -57,7 +56,34 @@ publisher = Logplex::Publisher.new
 publisher.publish "And she's buying a stairway to heaven"
 ```
 
-### License
+## Releasing
+
+1. **Bump the version** in `lib/logplex/version.rb`
+
+2. **Update `CHANGELOG.md`** — move entries from `[Unreleased]` into a new versioned section and update the comparison links at the bottom
+
+3. **Commit the changes**
+
+   ```shell
+   git add lib/logplex/version.rb CHANGELOG.md
+   git commit -m "version -> x.y.z"
+   ```
+
+4. **Create and push a git tag**
+
+   ```shell
+   git tag vx.y.z
+   git push origin main --tags
+   ```
+
+5. **Build and push the gem to RubyGems.org**
+
+   ```shell
+   gem build
+   gem push logplex-x.y.z.gem
+   ```
+
+## License
 
 Copyright (c) Harold Giménez. Released under the terms of the MIT License found
 in the LICENSE file.
